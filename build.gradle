@@ -2,10 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
-<<<<<<< HEAD
-=======
     id "org.sonarqube" version "4.4.1.3373"
->>>>>>> a94526c (reconectando no projeto)
 }
 
 group = 'com.example'
@@ -71,8 +68,6 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-<<<<<<< HEAD
-=======
 
 sonarqube{
     properties{
@@ -81,4 +76,3 @@ sonarqube{
         property "sonar.login", "sqa_7b9132cf1aae5aeca9c141df592d978596bf9fe4"
     }
 }
->>>>>>> a94526c (reconectando no projeto)
