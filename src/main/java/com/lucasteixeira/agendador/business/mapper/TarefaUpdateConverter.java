@@ -5,7 +5,10 @@ import com.lucasteixeira.agendador.business.dto.TarefasDTO;
 import com.lucasteixeira.agendador.infrastructure.entity.TarefasEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+<<<<<<< HEAD
 import org.mapstruct.NullValueMappingStrategy;
+=======
+>>>>>>> a94526c (reconectando no projeto)
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)//mapeas os valores e se for nulo, ele ignora

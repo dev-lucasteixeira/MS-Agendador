@@ -18,7 +18,11 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+<<<<<<< HEAD
 .idea
+=======
+Agendador-de-Tarefas/.idea
+>>>>>>> a94526c (reconectando no projeto)
 *.iws
 *.iml
 *.ipr
