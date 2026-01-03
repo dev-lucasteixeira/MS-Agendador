@@ -1,4 +1,4 @@
-package com.lucasteixeira.agendador.business;
+package com.lucasteixeira.agendador.business.services;
 
 import com.lucasteixeira.agendador.business.dto.TarefasDTO;
 import com.lucasteixeira.agendador.business.mapper.TarefaConverter;
@@ -8,6 +8,7 @@ import com.lucasteixeira.agendador.infrastructure.enums.StatusNotificacaoEnum;
 import com.lucasteixeira.agendador.infrastructure.exceptions.ResourceNotFoundException;
 import com.lucasteixeira.agendador.infrastructure.repository.TarefasRepository;
 import com.lucasteixeira.agendador.infrastructure.security.JwtUtil;
+import com.lucasteixeira.agendador.producers.TaskProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class TarefaService {
     private final TarefaConverter tarefaConverter;
     private final JwtUtil jwtUtil;
     private final TarefaUpdateConverter tarefaUpdateConverter;
+    private final TaskProducer taskProducer;
 
     public TarefasDTO gravarTarefa( TarefasDTO tarefasDTO, String token){
 
@@ -31,8 +33,11 @@ public class TarefaService {
         tarefasDTO.setEmailUsuario(email);
         TarefasEntity entity = tarefaConverter.paraTarefasEntity(tarefasDTO);
 
+        entity = tarefaRepository.save(entity);
 
-        return tarefaConverter.paraTarefasDTO(tarefaRepository.save(entity));
+        taskProducer.publishMessageEmailCadastro(email, entity);
+
+        return tarefaConverter.paraTarefasDTO(entity);
     }
 
     public List<TarefasDTO> buscaTarefasAgendadasPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal){
@@ -61,23 +66,33 @@ public class TarefaService {
             TarefasEntity entity = tarefaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarefa não encontrada " + id));
 
             entity.setStatusNotificacaoEnum(status);
-            return tarefaConverter.paraTarefasDTO(tarefaRepository.save(entity));
+            entity.setDataAlteracao(LocalDateTime.now());
+
+            entity = tarefaRepository.save(entity);
+
+            taskProducer.publishMessageEmailUpdateStatusTask(entity.getEmailUsuario(), entity);
+
+            return tarefaConverter.paraTarefasDTO(entity);
         }catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException("Erro ao alterar status da tarefa " + id,
                     e.getCause());
         }
     }
 
-    public TarefasDTO updateTarefas(TarefasDTO dto, String id){
+    public TarefasDTO updateTarefas(TarefasDTO dto, String id) {
         try {
-            TarefasEntity entity = tarefaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarefa não encontrada " + id));
-
+            TarefasEntity entity = tarefaRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Tarefa não encontrada " + id));
             tarefaUpdateConverter.updateTarefas(dto, entity);
-            return tarefaConverter.paraTarefasDTO(tarefaRepository.save(entity));
+            entity.setDataAlteracao(LocalDateTime.now());
+            entity = tarefaRepository.save(entity);
+            taskProducer.publishMessageEmailUpdateTask(entity.getEmailUsuario(), entity);
 
-        }catch (ResourceNotFoundException e){
-            throw new ResourceNotFoundException("Erro ao alterar status da tarefa " + id,
-                    e.getCause());
+            return tarefaConverter.paraTarefasDTO(entity);
+
+        } catch (ResourceNotFoundException e) {
+            // Melhorei a mensagem para refletir que o erro é na atualização geral
+            throw new ResourceNotFoundException("Erro ao atualizar a tarefa " + id, e);
         }
     }
 
