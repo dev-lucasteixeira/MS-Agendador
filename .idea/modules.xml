@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Agendador-de-Tarefas.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Agendador-de-Tarefas.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Agendador-de-Tarefas.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Agendador-de-Tarefas.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.example.Agendador-de-Tarefas.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.example.Agendador-de-Tarefas.main.iml" />
     </modules>
   </component>

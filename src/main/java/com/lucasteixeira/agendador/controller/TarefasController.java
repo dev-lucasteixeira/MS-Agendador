@@ -1,6 +1,6 @@
 package com.lucasteixeira.agendador.controller;
 
-import com.lucasteixeira.agendador.business.TarefaService;
+import com.lucasteixeira.agendador.business.services.TarefaService;
 import com.lucasteixeira.agendador.business.dto.TarefasDTO;
 import com.lucasteixeira.agendador.infrastructure.enums.StatusNotificacaoEnum;
 import lombok.RequiredArgsConstructor;
