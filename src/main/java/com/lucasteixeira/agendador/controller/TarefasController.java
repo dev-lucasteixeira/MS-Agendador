@@ -24,7 +24,8 @@ public class TarefasController {
     @PostMapping
     public ResponseEntity <TarefasDTO> gravarTarefa(@RequestBody TarefasDTO tarefasDTO,
                                                     @RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(tarefaService.gravarTarefa(tarefasDTO, token));
+        String email = jwtUtil.extractEmailToken(token.substring(7));
+        return ResponseEntity.ok(tarefaService.gravarTarefa(tarefasDTO, email));
     }
 
 
@@ -39,7 +40,8 @@ public class TarefasController {
 
     @GetMapping
     public ResponseEntity<List<TarefasDTO>> buscaListaDeTarefasPorEmail(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok(tarefaService.buscaTarefasPorEmail(token));
+        String email = jwtUtil.extractEmailToken(token.substring(7));
+        return ResponseEntity.ok(tarefaService.buscaTarefasPorEmail(email));
     }
 
     @DeleteMapping

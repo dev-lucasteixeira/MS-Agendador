@@ -28,9 +28,7 @@ public class TarefaService {
     private final TaskProducer taskProducer;
 
     @CacheEvict(value = "events", key = "#email")
-    public TarefasDTO gravarTarefa( TarefasDTO tarefasDTO, String token){
-
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+    public TarefasDTO gravarTarefa( TarefasDTO tarefasDTO, String email){
         tarefasDTO.setDataCriacao(LocalDateTime.now()); //pega a hora atual
         tarefasDTO.setStatusNotificacaoEnum(StatusNotificacaoEnum.PENDENTE);
         tarefasDTO.setEmailUsuario(email);
@@ -49,8 +47,7 @@ public class TarefaService {
     }
 
     @Cacheable(value = "task", key = "#email")
-    public List<TarefasDTO> buscaTarefasPorEmail(String token){
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+    public List<TarefasDTO> buscaTarefasPorEmail(String email){
         List<TarefasEntity> listasTarefas = tarefaRepository.findByEmailUsuario(email);
         return tarefaConverter.paraListaTarefasDTO(listasTarefas);
     }
