@@ -14,6 +14,7 @@ O **MS-Agendador** atua como o provedor de recursos para o BFF e o produtor de e
 2.  **Persistência**: Armazena dados de forma flexível no **MongoDB**.
 3.  **Agendamento**: Monitora prazos e eventos cronológicos.
 4.  **Mensageria**: Publica eventos no **RabbitMQ** para que o `MS-Notificacao` realize os disparos de e-mail de forma assíncrona.
+5.  **Escalabilidade com Cache:** Utilização de Redis para armazenamento temporário de dados, mitigando gargalos de I/O no banco de dados relacional.
 
 ---
 
@@ -25,6 +26,7 @@ O **MS-Agendador** atua como o provedor de recursos para o BFF e o produtor de e
 - **RabbitMQ (AMQP)**: Mensageria para desacoplamento de serviços.
 - **JUnit 5 & AssertJ**: Cobertura de testes unitários e de integração.
 - **Gradle**: Gerenciamento de dependências e build.
+- **Performance & Caching:** Spring Data Redis & Redis (In-memory store)
 
 ---
 
