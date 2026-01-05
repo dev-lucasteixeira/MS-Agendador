@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lucasteixeira.agendador.infrastructure.enums.StatusNotificacaoEnum;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Setter
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TarefasDTO {
+public class TarefasDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String nomeTarefa;

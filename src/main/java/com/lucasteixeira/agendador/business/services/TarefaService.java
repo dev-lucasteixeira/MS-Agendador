@@ -10,6 +10,8 @@ import com.lucasteixeira.agendador.infrastructure.repository.TarefasRepository;
 import com.lucasteixeira.agendador.infrastructure.security.JwtUtil;
 import com.lucasteixeira.agendador.producers.TaskProducer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,9 +27,8 @@ public class TarefaService {
     private final TarefaUpdateConverter tarefaUpdateConverter;
     private final TaskProducer taskProducer;
 
-    public TarefasDTO gravarTarefa( TarefasDTO tarefasDTO, String token){
-
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+    @CacheEvict(value = "events", key = "#email")
+    public TarefasDTO gravarTarefa( TarefasDTO tarefasDTO, String email){
         tarefasDTO.setDataCriacao(LocalDateTime.now()); //pega a hora atual
         tarefasDTO.setStatusNotificacaoEnum(StatusNotificacaoEnum.PENDENTE);
         tarefasDTO.setEmailUsuario(email);
@@ -40,17 +41,19 @@ public class TarefaService {
         return tarefaConverter.paraTarefasDTO(entity);
     }
 
+    @Cacheable(value = "task", key = "{#dataInicial, #dataFinal}")
     public List<TarefasDTO> buscaTarefasAgendadasPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal){
         return tarefaConverter.paraListaTarefasDTO(tarefaRepository.findByDataEventoBetweenAndStatusNotificacaoEnum(dataInicial, dataFinal, StatusNotificacaoEnum.PENDENTE));
     }
 
-    public List<TarefasDTO> buscaTarefasPorEmail(String token){
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+    @Cacheable(value = "task", key = "#email")
+    public List<TarefasDTO> buscaTarefasPorEmail(String email){
         List<TarefasEntity> listasTarefas = tarefaRepository.findByEmailUsuario(email);
         return tarefaConverter.paraListaTarefasDTO(listasTarefas);
     }
 
-    public void deletaTarefaPorId(String id){
+    @CacheEvict(value = "events", key = "#email")
+    public void deletaTarefaPorId(String id,String email){
         try {
             tarefaRepository.deleteById(id);
         }catch (ResourceNotFoundException e){
@@ -61,6 +64,7 @@ public class TarefaService {
 
     }
 
+    @CacheEvict(value = "task", allEntries = true)
     public TarefasDTO alteraStatus(StatusNotificacaoEnum status, String id){
         try {
             TarefasEntity entity = tarefaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tarefa não encontrada " + id));
@@ -79,6 +83,7 @@ public class TarefaService {
         }
     }
 
+    @CacheEvict(value = "task", allEntries = true)
     public TarefasDTO updateTarefas(TarefasDTO dto, String id) {
         try {
             TarefasEntity entity = tarefaRepository.findById(id)
