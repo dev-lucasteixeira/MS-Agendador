@@ -51,6 +51,9 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.apache.commons:commons-pool2'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.github.openfeign:feign-micrometer'
 
 
     configurations.all {
