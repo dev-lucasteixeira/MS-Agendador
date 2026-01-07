@@ -2,7 +2,6 @@ package com.lucasteixeira.agendador.producers;
 
 import com.lucasteixeira.agendador.business.dto.EmailDTO;
 import com.lucasteixeira.agendador.infrastructure.entity.TarefasEntity;
-import com.lucasteixeira.agendador.infrastructure.security.JwtUtil;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,11 +12,9 @@ import java.time.format.DateTimeFormatter;
 public class TaskProducer {
 
     final RabbitTemplate rabbitTemplate;
-    private final JwtUtil jwtUtil;
 
-    public TaskProducer(RabbitTemplate rabbitTemplate, JwtUtil jwtUtil) {
+    public TaskProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
-        this.jwtUtil = jwtUtil;
     }
 
     @Value(value = "${mq.queues.emailcadastrotarefas-queue}")

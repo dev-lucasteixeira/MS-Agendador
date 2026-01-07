@@ -3,11 +3,11 @@ package com.lucasteixeira.agendador.controller;
 import com.lucasteixeira.agendador.business.services.TarefaService;
 import com.lucasteixeira.agendador.business.dto.TarefasDTO;
 import com.lucasteixeira.agendador.infrastructure.enums.StatusNotificacaoEnum;
-import com.lucasteixeira.agendador.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -19,12 +19,11 @@ import java.util.List;
 public class TarefasController {
 
     private final TarefaService tarefaService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping
     public ResponseEntity <TarefasDTO> gravarTarefa(@RequestBody TarefasDTO tarefasDTO,
-                                                    @RequestHeader("Authorization") String token){
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+                                                    @AuthenticationPrincipal Jwt jwt){
+        String email = jwt.getClaimAsString("email");
         return ResponseEntity.ok(tarefaService.gravarTarefa(tarefasDTO, email));
     }
 
@@ -39,16 +38,16 @@ public class TarefasController {
 
 
     @GetMapping
-    public ResponseEntity<List<TarefasDTO>> buscaListaDeTarefasPorEmail(@RequestHeader("Authorization") String token){
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+    public ResponseEntity<List<TarefasDTO>> buscaListaDeTarefasPorEmail(@AuthenticationPrincipal Jwt jwt){
+        String email = jwt.getClaimAsString("email");
         return ResponseEntity.ok(tarefaService.buscaTarefasPorEmail(email));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deletaTarefaPorId(@RequestParam String id,
-                                                  @RequestHeader("Authorization") String token){
+                                                  @AuthenticationPrincipal Jwt jwt){
 
-        String email = jwtUtil.extractEmailToken(token.substring(7));
+        String email = jwt.getClaimAsString("email");
         tarefaService.deletaTarefaPorId(id, email);
         return ResponseEntity.ok().build();
     }

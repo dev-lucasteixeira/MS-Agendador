@@ -7,7 +7,6 @@ import com.lucasteixeira.agendador.infrastructure.entity.TarefasEntity;
 import com.lucasteixeira.agendador.infrastructure.enums.StatusNotificacaoEnum;
 import com.lucasteixeira.agendador.infrastructure.exceptions.ResourceNotFoundException;
 import com.lucasteixeira.agendador.infrastructure.repository.TarefasRepository;
-import com.lucasteixeira.agendador.infrastructure.security.JwtUtil;
 import com.lucasteixeira.agendador.producers.TaskProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,7 +22,6 @@ public class TarefaService {
 
     private final TarefasRepository tarefaRepository;
     private final TarefaConverter tarefaConverter;
-    private final JwtUtil jwtUtil;
     private final TarefaUpdateConverter tarefaUpdateConverter;
     private final TaskProducer taskProducer;
 
